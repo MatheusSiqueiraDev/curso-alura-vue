@@ -2,8 +2,9 @@
   <div class="corpo">
     <!--<h1 v-text="titulo"></h1>-->
     <h1 class="centralizado">{{ titulo }}</h1>
+    <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="Filtre por parte do título">
     <ul class="lista-fotos">
-      <li class="lista-fotos-item" v-for="foto of fotos">
+      <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
          <meu-painel :titulo="foto.titulo">
             <img class="imagem-responsiva" v-bind:src="foto.url" :alt="foto.titulo">
         </meu-painel>
@@ -23,7 +24,18 @@ export default {
     return {
       titulo: 'Alurapic',
       fotos: [],
+      filtro: ''
     }
+  },
+  computed: {
+    fotosComFiltro() {
+      if(this.filtro) {
+        let exp = new RegExp(this.filtro.trim(), 'i');
+        return this.fotos.filter(foto => exp.test(foto.titulo));
+      } else {
+        return this.fotos;
+      }
+    },
   },
   created() {
     let promise = this.$http.get('http://localhost:3000/v1/fotos');
@@ -55,4 +67,8 @@ export default {
     width: 100%;
   }
 
+  .filtro {
+    display: block;
+    width: 100%;
+  }
 </style>
