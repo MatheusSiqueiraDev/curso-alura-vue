@@ -7,7 +7,9 @@
         </li>
       </ul>
     </nav>
-    <router-view></router-view>
+    <transition name="pagina">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
