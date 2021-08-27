@@ -2,11 +2,12 @@
   <div>
     <!--<h1 v-text="titulo"></h1>-->
     <h1 class="centralizado">{{ titulo }}</h1>
-    <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="Filtre por parte do título">
+    <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="Filtre por parte do título"> <!-- V-on ou @-->
     <ul class="lista-fotos">
       <li class="lista-fotos-item" v-for="foto of fotosComFiltro">
          <meu-painel :titulo="foto.titulo">
             <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
+            <meu-botao tipo="button" rotulo="REMOVER" v-on:botaoAtivado="remove(foto)"/>
         </meu-painel>
       </li>
     </ul>
@@ -16,11 +17,13 @@
 <script>
 import Painel from '../shared/painel/Painel.vue';
 import ImagemResponsiva from '../shared/imagem-responsiva/ImagemResponsiva.vue';
+import Botao from '../shared/botao/Botao.vue';
 
 export default {
   components: {
     'meu-painel': Painel,
-    'imagem-responsiva': ImagemResponsiva
+    'imagem-responsiva': ImagemResponsiva,
+    'meu-botao': Botao
   },
   data() {
     return {
@@ -38,6 +41,11 @@ export default {
         return this.fotos;
       }
     },
+  },
+  methods: {
+    remove(foto) {
+      alert(`Remover ${foto.titulo}`);
+    }
   },
   created() {
     let promise = this.$http.get('http://localhost:3000/v1/fotos');
