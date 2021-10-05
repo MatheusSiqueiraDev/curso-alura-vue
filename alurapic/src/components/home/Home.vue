@@ -46,6 +46,16 @@ export default {
   },
   methods: {
     remove(foto) {
+      this.resource.delete({ id: foto._id }).then(() => {
+        this.mensagem = 'Foto removida com sucesso';
+        let indice = this.fotos.indexOf(foto); 
+        this.fotos.splice(indice, 1);
+        }, err => {
+        console.log(err);
+        this.mensagem = 'Não foi possível remover a foto';
+      });;
+
+      /*
       this.$http.delete(`v1/fotos/${foto._id}`).then(() => {
         this.mensagem = 'Foto removida com sucesso';
         let indice = this.fotos.indexOf(foto); 
@@ -53,12 +63,16 @@ export default {
         }, err => {
         console.log(err);
         this.mensagem = 'Não foi possível remover a foto';
-      });
+      });*/
     }
   },
   created() {
+    this.resource = this.$resource('v1/fotos{/id}');
+    this.resource.query().then(res => res.json()).then(fotos => this.fotos = fotos, err => console.log(err))
+
+    /*
     let promise = this.$http.get('v1/fotos');
-    promise.then(res => res.json()).then(fotos => this.fotos = fotos, err => console.log(err));
+    promise.then(res => res.json()).then(fotos => this.fotos = fotos, err => console.log(err));*/
   }
 }
 </script>
