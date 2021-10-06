@@ -3,6 +3,9 @@
         <h1 class="centralizado">Cadastro</h1>
         <h2 class="centralizado">{{ foto.titulo }}</h2>
 
+        <h2 v-if="foto._id" class="centralizado">Alterando</h2>
+        <h2 v-else class="centralizado">Incluindo</h2>
+
         <form v-on:submit.prevent="grava()">
             <div class="controle">
                 <label for="titulo">TÍTULO</label>
@@ -22,7 +25,7 @@
 
             <div class="centralizado">
                 <meu-botao rotulo="GRAVAR" tipo="submit"/>
-                <router-link to="/"><meu-botao rotulo="VOLTAR" tipo="button"/></router-link>
+                <router-link :to="{name: 'home'}"><meu-botao rotulo="VOLTAR" tipo="button"/></router-link>
             </div>
 
     </form>
@@ -32,6 +35,7 @@
 import ImagemResponsiva from '../shared/imagem-responsiva/ImagemResponsiva.vue'
 import Botao from '../shared/botao/Botao.vue';
 import Foto from '../../domain/foto/Foto';
+import FotoService from '../../domain/foto/FotoService';
 
 export default {
     components: {
@@ -40,19 +44,28 @@ export default {
     },
     data() {
         return {
-            foto: new Foto()
+            foto: new Foto(),
+            id: this.$route.params.id
         }
     },
     methods: {
         grava() {
-            this.resource.save(this.foto).then(() => this.foto = new Foto(), err => console.log(err));
+            this.service.cadastra(this.foto).then(() => {
+                if(this.id) this.$router.push({name: 'home'});    
+                this.foto = new Foto()
+            }, err => console.log(err));
             /*
+            this.resource.save(this.foto).then(() => this.foto = new Foto(), err => console.log(err));
             this.$http.post('v1/fotos', this.foto).then(() => this.foto = new Foto(), err => console.log(err));
             */
         }
     },
     created() {
-        this.resource = this.$resource('v1/fotos{/id}');
+        this.service = new FotoService(this.$resource);
+        if(this.id) {
+            this.service.busca(this.id).then(foto => this.foto = foto);
+        }
+        /*this.resource = this.$resource('v1/fotos{/id}');*/
     }
 }
 </script>
