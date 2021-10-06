@@ -55,8 +55,7 @@ export default {
         let indice = this.fotos.indexOf(foto); 
         this.fotos.splice(indice, 1);
         }, err => {
-        console.log(err);
-        this.mensagem = 'Não foi possível remover a foto';
+        this.mensagem = err.message;
       });;
 
       /*this.resource.delete({ id: foto._id }).then(() => {
@@ -80,7 +79,7 @@ export default {
   },
   created() {
     this.service = new FotoService(this.$resource);
-    this.service.lista().then(fotos => this.fotos = fotos, err => console.log(err));
+    this.service.lista().then(fotos => this.fotos = fotos, err => this.mensagem = err.message);
 
     /*
     this.resource = this.$resource('v1/fotos{/id}');
